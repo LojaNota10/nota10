@@ -84,18 +84,3 @@
   </script>
 </body>
 </html>
-"""
-
-# Salvar arquivo atualizado
-with open(base_dir / "cadastro.html", "w", encoding="utf-8") as f:
-    f.write(cadastro_html_updated)
-
-# Recriar o ZIP com cadastro atualizado
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
-    for folder, _, files in os.walk(base_dir):
-        for file in files:
-            full_path = os.path.join(folder, file)
-            relative_path = os.path.relpath(full_path, base_dir)
-            zipf.write(full_path, arcname=relative_path)
-
-zip_path
