@@ -2,12 +2,13 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f9f9f9;
+  background: #fff;
+  color: #333;
 }
 header {
-  background: #c2185b;
+  background: #c00;
   color: white;
-  padding: 1rem;
+  padding: 20px;
   text-align: center;
 }
 nav a {
@@ -39,8 +40,14 @@ button {
   cursor: pointer;
 }
 footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #eee;
-  margin-top: 2rem;
+    background-color: #c00;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+main {
+    padding: 20px;
 }
