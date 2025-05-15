@@ -6,6 +6,7 @@
   <title>Cadastro - Nota10!</title>
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 </head>
 <body>
@@ -22,11 +23,13 @@
   <main>
     <h2>Cadastro</h2>
     <form id="formCadastro">
-      <input type="text" placeholder="Nome" required />
-      <input type="email" placeholder="Email" required />
-      <input type="text" placeholder="Endereço" required />
+      <input type="text" id="nome" placeholder="Nome" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <input type="text" id="endereco" placeholder="Endereço" required />
       <button type="submit">Cadastrar</button>
     </form>
+    <p id="mensagem"></p>
   </main>
 
   <footer>
@@ -34,32 +37,65 @@
   </footer>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
+    const firebaseConfig = {{
+      apiKey: "AIzaSyB5-DMKyUPKH89Y2kdUbPIuAL1M61JUoDE",
       authDomain: "nota10-56108.firebaseapp.com",
       databaseURL: "https://nota10-56108-default-rtdb.firebaseio.com",
       projectId: "nota10-56108",
-      storageBucket: "nota10-56108.appspot.com",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
+      storageBucket: "nota10-56108.firebasestorage.app",
+      messagingSenderId: "1003671586468",
+      appId: "1:1003671586468:web:d8f7777b97d8e56a180831",
+      measurementId: "G-3PNK45ECYV"
+    }};
+
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.database();
 
     const form = document.getElementById('formCadastro');
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const nome = form.elements[0].value;
-      const email = form.elements[1].value;
-      const endereco = form.elements[2].value;
+    const msg = document.getElementById('mensagem');
 
-      db.ref('usuarios').push({ nome, email, endereco })
-        .then(() => {
-          alert("Cadastro realizado!");
-          form.reset();
-        })
-        .catch(err => alert("Erro ao cadastrar"));
-    });
+    form.addEventListener('submit', function(e) {{
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const email = document.getElementById('email').value;
+      const senha = document.getElementById('senha').value;
+      const endereco = document.getElementById('endereco').value;
+
+      auth.createUserWithEmailAndPassword(email, senha)
+        .then((userCredential) => {{
+          const uid = userCredential.user.uid;
+
+          db.ref('usuarios/' + uid).set({{
+            nome,
+            email,
+            endereco
+          }}).then(() => {{
+            msg.textContent = "Cadastro realizado com sucesso!";
+            form.reset();
+          }});
+        }})
+        .catch((error) => {{
+          console.error("Erro no cadastro:", error);
+          msg.textContent = "Erro: " + error.message;
+        }});
+    }});
   </script>
 </body>
 </html>
+"""
+
+# Salvar arquivo atualizado
+with open(base_dir / "cadastro.html", "w", encoding="utf-8") as f:
+    f.write(cadastro_html_updated)
+
+# Recriar o ZIP com cadastro atualizado
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
+    for folder, _, files in os.walk(base_dir):
+        for file in files:
+            full_path = os.path.join(folder, file)
+            relative_path = os.path.relpath(full_path, base_dir)
+            zipf.write(full_path, arcname=relative_path)
+
+zip_path
