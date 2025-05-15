@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Nota10!</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Nota10!</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="cadastro.html">Cadastro</a>
+      <a href="checkout.html">Finalizar Compra</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="senha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+    </form>
+    <p id="mensagem"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Nota10!</p>
+  </footer>
+
+  <script>
+    
+const firebaseConfig = {
+  apiKey: "AIzaSyB5-DMKyUPKH89Y2kdUbPIuAL1M61JUoDE",
+  authDomain: "nota10-56108.firebaseapp.com",
+  databaseURL: "https://nota10-56108-default-rtdb.firebaseio.com",
+  projectId: "nota10-56108",
+  storageBucket: "nota10-56108.firebasestorage.app",
+  messagingSenderId: "1003671586468",
+  appId: "1:1003671586468:web:d8f7777b97d8e56a180831",
+  measurementId: "G-3PNK45ECYV"
+};
+
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const form = document.getElementById("loginForm");
+    const msg = document.getElementById("mensagem");
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      auth.signInWithEmailAndPassword(email, senha)
+        .then(() => {
+          msg.textContent = "Login realizado!";
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          msg.textContent = "Erro: " + error.message;
+        });
+    });
+  </script>
+</body>
+</html>
