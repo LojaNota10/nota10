@@ -5,9 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro - Nota10!</title>
   <link rel="stylesheet" href="css/style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <!-- Firebase SDKs (modular, atualizados) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyC2p6pD1-1UIZIR6t9HGgY1MEZp-Ko6HQY",
+      authDomain: "nota10-2a145.firebaseapp.com",
+      projectId: "nota10-2a145",
+      storageBucket: "nota10-2a145.firebasestorage.app",
+      messagingSenderId: "436213313484",
+      appId: "1:436213313484:web:ac7da852ae96c1a08cb769"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Evento de envio do formulário
+    window.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("formCadastro");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nome = form.elements[0].value;
+        const email = form.elements[1].value;
+        const endereco = form.elements[2].value;
+        const senha = "senhaPadrao123"; // ou gere uma senha, ou adicione um campo se quiser
+
+        try {
+          // Cria o usuário no Auth
+          const userCred = await createUserWithEmailAndPassword(auth, email, senha);
+
+          // Salva os dados no Firestore
+          await addDoc(collection(db, "usuarios"), {
+            uid: userCred.user.uid,
+            nome,
+            email,
+            endereco,
+            dataCadastro: new Date()
+          });
+
+          alert("Cadastro realizado com sucesso!");
+          form.reset();
+        } catch (error) {
+          alert("Erro ao cadastrar: " + error.message);
+        }
+      });
+    });
+  </script>
 </head>
 <body>
   <header>
@@ -23,64 +82,15 @@
   <main>
     <h2>Cadastro</h2>
     <form id="formCadastro">
-      <input type="text" id="nome" placeholder="Nome" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="senha" placeholder="Senha" required />
-      <input type="text" id="endereco" placeholder="Endereço" required />
+      <input type="text" placeholder="Nome" required />
+      <input type="email" placeholder="Email" required />
+      <input type="text" placeholder="Endereço" required />
       <button type="submit">Cadastrar</button>
     </form>
-    <p id="mensagem"></p>
   </main>
 
   <footer>
     <p>&copy; 2025 Nota10!</p>
   </footer>
-
-  <script>
-    const firebaseConfig = {{
-      apiKey: "AIzaSyB5-DMKyUPKH89Y2kdUbPIuAL1M61JUoDE",
-      authDomain: "nota10-56108.firebaseapp.com",
-      databaseURL: "https://nota10-56108-default-rtdb.firebaseio.com",
-      projectId: "nota10-56108",
-      storageBucket: "nota10-56108.firebasestorage.app",
-      messagingSenderId: "1003671586468",
-      appId: "1:1003671586468:web:d8f7777b97d8e56a180831",
-      measurementId: "G-3PNK45ECYV"
-    }};
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    const form = document.getElementById('formCadastro');
-    const msg = document.getElementById('mensagem');
-
-    form.addEventListener('submit', function(e) {{
-      e.preventDefault();
-
-      const nome = document.getElementById('nome').value;
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('senha').value;
-      const endereco = document.getElementById('endereco').value;
-
-      auth.createUserWithEmailAndPassword(email, senha)
-        .then((userCredential) => {{
-          const uid = userCredential.user.uid;
-
-          db.ref('usuarios/' + uid).set({{
-            nome,
-            email,
-            endereco
-          }}).then(() => {{
-            msg.textContent = "Cadastro realizado com sucesso!";
-            form.reset();
-          }});
-        }})
-        .catch((error) => {{
-          console.error("Erro no cadastro:", error);
-          msg.textContent = "Erro: " + error.message;
-        }});
-    }});
-  </script>
 </body>
 </html>
